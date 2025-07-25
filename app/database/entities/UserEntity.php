@@ -3,6 +3,7 @@
 namespace app\database\entities;
 
 use core\database\entities\AbstractEntity;
+use DateTimeImmutable;
 
 class UserEntity extends AbstractEntity
 {
@@ -13,8 +14,8 @@ class UserEntity extends AbstractEntity
   protected ?string $image;
   protected ?string $avatar_id;
   protected ?string $password;
-  protected ?string $created_at;
-  protected ?string $updated_at;
+  protected ?DateTimeImmutable $created_at;
+  protected ?DateTimeImmutable $updated_at;
 
   public function getId(): ?int
   {
@@ -103,13 +104,13 @@ class UserEntity extends AbstractEntity
     return $this;
   }
 
-  public function setCreated_at(?string $created_at): self
+  public function setCreated_at(?DateTimeImmutable $created_at): self
   {
     $this->created_at = $created_at;
     return $this;
   }
 
-  public function setUpdated_at(?string $updated_at): self
+  public function setUpdated_at(?DateTimeImmutable $updated_at): self
   {
     $this->updated_at = $updated_at;
     return $this;
