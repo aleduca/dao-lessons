@@ -52,12 +52,12 @@ class UserEntity extends AbstractEntity
     return $this->password ?? null;
   }
 
-  public function getCreated_at(): ?string
+  public function getCreated_at(): ?DateTimeImmutable
   {
     return $this->created_at ?? null;
   }
 
-  public function getUpdated_at(): ?string
+  public function getUpdated_at(): ?DateTimeImmutable
   {
     return $this->updated_at ?? null;
   }
