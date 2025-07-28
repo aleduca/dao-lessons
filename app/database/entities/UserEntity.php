@@ -4,6 +4,7 @@ namespace app\database\entities;
 
 use core\database\entities\AbstractEntity;
 use DateTimeImmutable;
+use Exception;
 
 class UserEntity extends AbstractEntity
 {
@@ -70,7 +71,7 @@ class UserEntity extends AbstractEntity
 
   public function setFirstName(?string $firstName): self
   {
-    $this->firstName = $firstName;
+    $this->firstName = ucfirst($firstName);
     return $this;
   }
 
@@ -82,6 +83,9 @@ class UserEntity extends AbstractEntity
 
   public function setEmail(?string $email): self
   {
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      throw new Exception("Email not valid");
+    }
     $this->email = $email;
     return $this;
   }

@@ -13,6 +13,24 @@ abstract class AbstractEntity
     }
   }
 
+  public function __set(string $property, mixed $value): void
+  {
+    if (property_exists($this, $property)) {
+      $method = 'set' . ucfirst($property);
+      $this->{$method}($value);
+    }
+  }
+
+  public function __get(string $property): mixed
+  {
+    if (property_exists($this, $property)) {
+      $method = 'get' . ucfirst($property);
+      return $this->{$method}();
+    }
+    return null;
+  }
+
+
   public function normalizer(array $data)
   {
     foreach ($data as $property => $value) {
