@@ -6,6 +6,17 @@ use core\database\entities\AbstractEntity;
 use DateTimeImmutable;
 use Exception;
 
+/**
+ * @property ?int $id
+ * @property ?string $firstName
+ * @property ?string $lastName
+ * @property ?string $email
+ * @property ?string $image
+ * @property ?string $avatar_id
+ * @property ?string $password
+ * @property ?DateTimeImmutable $created_at
+ * @property ?DateTimeImmutable $updated_at
+ */
 class UserEntity extends AbstractEntity
 {
   protected ?int $id;

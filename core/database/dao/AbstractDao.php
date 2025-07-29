@@ -7,6 +7,9 @@ use core\database\entities\AbstractEntity;
 use core\database\EntityMapper;
 use PDO;
 
+/**
+ * @template TEntity of AbstractEntity
+ */
 abstract class AbstractDao
 {
   protected PDO $connection;
@@ -20,6 +23,9 @@ abstract class AbstractDao
     $this->entityMapper = new EntityMapper;
   }
 
+  /**
+   * @return TEntity[]|null
+   */
   public function findAll(string $fields = '*'): ?array
   {
     $sql = "SELECT {$fields} from {$this->table}";
@@ -28,6 +34,9 @@ abstract class AbstractDao
     return $this->entityMapper->mapToEntity($this->entity, $data);
   }
 
+  /**
+   * @return TEntity|null
+   */
   public function findBy(string $field, mixed $value, string $fields = '*'): ?AbstractEntity
   {
     $sql = "SELECT {$fields} from {$this->table} where {$field} = :{$field}";
@@ -36,9 +45,17 @@ abstract class AbstractDao
       $field => $value
     ]);
     $data = $prepare->fetch();
+
+    if (!$data) {
+      return null;
+    }
+
     return $this->entityMapper->mapToEntity($this->entity, $data);
   }
 
+  /**
+   * @return TEntity|null
+   */
   public function findById(int $id, string $fields = '*'): ?AbstractEntity
   {
     return $this->findBy('id', $id, $fields);
