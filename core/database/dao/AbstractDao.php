@@ -61,12 +61,14 @@ abstract class AbstractDao
     return $this->findBy('id', $id, $fields);
   }
 
-  private function toArray(AbstractEntity|array $arrayOrEntity)
+  private function toArray(AbstractEntity|array $arrayOrEntity): array
   {
     if ($arrayOrEntity instanceof AbstractEntity) {
       return $arrayOrEntity->toArray();
     }
-    $arrayOrEntity['password'] = password_hash($arrayOrEntity['password'], PASSWORD_DEFAULT);
+    if (array_key_exists('password', $arrayOrEntity)) {
+      $arrayOrEntity['password'] = password_hash($arrayOrEntity['password'], PASSWORD_DEFAULT);
+    }
     return $arrayOrEntity;
   }
 
