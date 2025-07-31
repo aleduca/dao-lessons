@@ -66,7 +66,7 @@ abstract class AbstractDao
     if ($arrayOrEntity instanceof AbstractEntity) {
       return $arrayOrEntity->toArray();
     }
-    if (array_key_exists('password', $arrayOrEntity)) {
+    if (isset($arrayOrEntity['password'])) {
       $arrayOrEntity['password'] = password_hash($arrayOrEntity['password'], PASSWORD_DEFAULT);
     }
     return $arrayOrEntity;
