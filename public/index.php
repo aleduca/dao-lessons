@@ -5,9 +5,13 @@ use app\database\entities\UserEntity;
 
 require '../vendor/autoload.php';
 
+$userEntity = new UserEntity();
+$userEntity->firstName = 'Alexandre';
+$userEntity->lastName = 'Cardoso';
+$userEntity->email = 'email9@email.com.br';
+$userEntity->password = '123';
+
 $userDao = new UserDao;
-$user = $userDao->findById(8);
-dd($user);
+$created = $userDao->insert($userEntity);
 
-
-dd($userEntity->getCreated_at()->format('d/m/Y H:i:s'));
+dd($created);

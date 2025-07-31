@@ -38,9 +38,20 @@ abstract class AbstractEntity
         if (in_array($property, ['created_at', 'updated_at'])) {
           $value = new DateTimeImmutable($value);
         }
+
+        if ($property === 'password') {
+          $this->{$property} = $value;
+          continue;
+        }
+
         $method = 'set' . ucfirst($property);
         $this->{$method}($value);
       }
     }
+  }
+
+  public function toArray()
+  {
+    return get_object_vars($this);
   }
 }

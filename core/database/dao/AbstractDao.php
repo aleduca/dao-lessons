@@ -60,4 +60,27 @@ abstract class AbstractDao
   {
     return $this->findBy('id', $id, $fields);
   }
+
+  private function toArray(AbstractEntity|array $arrayOrEntity)
+  {
+    if ($arrayOrEntity instanceof AbstractEntity) {
+      return $arrayOrEntity->toArray();
+    }
+    $arrayOrEntity['password'] = password_hash($arrayOrEntity['password'], PASSWORD_DEFAULT);
+    return $arrayOrEntity;
+  }
+
+  public function insert(AbstractEntity|array $arrayOrEntity): AbstractEntity
+  {
+    $data = $this->toArray($arrayOrEntity);
+    $fields = implode(',', array_keys($data));
+    $placeholders = ':' . implode(',:', array_keys($data));
+    $sql = "INSERT into {$this->table}({$fields}) values({$placeholders})";
+    $prepare = $this->connection->prepare($sql);
+    $prepare->execute($data);
+
+    $lastInsertedId = $this->connection->lastInsertId();
+
+    return $this->findById($lastInsertedId);
+  }
 }
