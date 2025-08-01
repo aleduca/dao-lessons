@@ -30,8 +30,7 @@ abstract class AbstractEntity
     return null;
   }
 
-
-  public function normalizer(array $data)
+  public function normalizeArrayToEntity(array $data)
   {
     foreach ($data as $property => $value) {
       if (property_exists($this, $property)) {
@@ -50,7 +49,7 @@ abstract class AbstractEntity
     }
   }
 
-  public function toArray()
+  public function entityToArray()
   {
     return get_object_vars($this);
   }

@@ -4,7 +4,7 @@ namespace core\database\dao;
 
 use core\database\Connection;
 use core\database\entities\AbstractEntity;
-use core\database\EntityMapper;
+use core\database\EntityManager;
 use PDO;
 
 /**
@@ -15,12 +15,12 @@ abstract class AbstractDao
   protected PDO $connection;
   protected string $table;
   protected string $entity;
-  protected EntityMapper $entityMapper;
+  protected EntityManager $entityManager;
 
   public function __construct()
   {
     $this->connection = Connection::getConnection();
-    $this->entityMapper = new EntityMapper;
+    $this->entityManager = new EntityManager;
   }
 
   /**
@@ -31,7 +31,7 @@ abstract class AbstractDao
     $sql = "SELECT {$fields} from {$this->table}";
     $select = $this->connection->query($sql);
     $data = $select->fetchAll();
-    return $this->entityMapper->mapToEntity($this->entity, $data);
+    return $this->entityManager->mapToEntity($this->entity, $data);
   }
 
   /**
@@ -50,7 +50,7 @@ abstract class AbstractDao
       return null;
     }
 
-    return $this->entityMapper->mapToEntity($this->entity, $data);
+    return $this->entityManager->mapToEntity($this->entity, $data);
   }
 
   /**
@@ -61,20 +61,10 @@ abstract class AbstractDao
     return $this->findBy('id', $id, $fields);
   }
 
-  private function toArray(AbstractEntity|array $arrayOrEntity): array
-  {
-    if ($arrayOrEntity instanceof AbstractEntity) {
-      return $arrayOrEntity->toArray();
-    }
-    if (isset($arrayOrEntity['password'])) {
-      $arrayOrEntity['password'] = password_hash($arrayOrEntity['password'], PASSWORD_DEFAULT);
-    }
-    return $arrayOrEntity;
-  }
-
   public function insert(AbstractEntity|array $arrayOrEntity): AbstractEntity
   {
-    $data = $this->toArray($arrayOrEntity);
+    $data = $this->entityManager->normalizeDataToArray($arrayOrEntity);
+
     $fields = implode(',', array_keys($data));
     $placeholders = ':' . implode(',:', array_keys($data));
     $sql = "INSERT into {$this->table}({$fields}) values({$placeholders})";
