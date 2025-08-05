@@ -5,6 +5,7 @@ namespace core\database\dao;
 use core\database\Connection;
 use core\database\entities\AbstractEntity;
 use core\database\EntityManager;
+use Exception;
 use PDO;
 
 /**
@@ -50,7 +51,11 @@ abstract class AbstractDao
       return null;
     }
 
-    return $this->entityManager->mapToEntity($this->entity, $data);
+    $entity = $this->entityManager->mapToEntity($this->entity, $data);
+
+    $this->entityManager->snapshotEntityManager->takeSnapshot($entity);
+
+    return $entity;
   }
 
   /**
@@ -74,5 +79,15 @@ abstract class AbstractDao
     $lastInsertedId = $this->connection->lastInsertId();
 
     return $this->findById($lastInsertedId);
+  }
+
+  public function update(AbstractEntity $entity)
+  {
+    if (!$this->entityManager->snapshotEntityManager->snapshotTaken()) {
+      throw new Exception('To update use find method');
+    }
+
+    $properties = $this->entityManager->snapshotEntityManager->propertiesChanged($entity);
+    dd($properties);
   }
 }

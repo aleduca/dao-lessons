@@ -9,6 +9,13 @@ use core\database\entities\AbstractEntity;
  */
 class EntityManager
 {
+  public SnapshotEntityManager $snapshotEntityManager;
+
+  public function __construct()
+  {
+    $this->snapshotEntityManager = new SnapshotEntityManager;
+  }
+
   /**
    * @param class-string<TEntity> $entity
    * @param array $data
