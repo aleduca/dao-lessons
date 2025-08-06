@@ -81,8 +81,12 @@ abstract class AbstractDao
     return $this->findById($lastInsertedId);
   }
 
-  public function update(AbstractEntity $entity): ?int
+  public function update(?AbstractEntity $entity): ?int
   {
+    if (is_null($entity)) {
+      return null;
+    }
+
     if (!$this->entityManager->snapshotEntityManager->snapshotTaken()) {
       throw new Exception('To update use find method');
     }
@@ -104,6 +108,21 @@ abstract class AbstractDao
     ]);
 
     $this->entityManager->snapshotEntityManager->clearSnapshot();
+
+    return $prepare->rowCount();
+  }
+
+  public function delete(?AbstractEntity $entity): ?int
+  {
+    if (is_null($entity)) {
+      return null;
+    }
+    // DELETE from users where id = :id
+    $sql = "DELETE from {$this->table} where id = :id";
+    $prepare = $this->connection->prepare($sql);
+    $prepare->execute([
+      'id' => $entity->id
+    ]);
 
     return $prepare->rowCount();
   }

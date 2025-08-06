@@ -5,11 +5,8 @@ use app\database\dao\UserDao;
 require '../vendor/autoload.php';
 
 $userDao = new UserDao;
-$user = $userDao->findById(14);
-$user->firstName = 'Alexandre';
-$user->lastName = 'Cardoso';
-$user->email = 'email2@email.com.br';
+$user = $userDao->findById(341);
 
-$updated = $userDao->update($user);
+$updated = $userDao->delete($user);
 
 dd($updated);
