@@ -81,13 +81,30 @@ abstract class AbstractDao
     return $this->findById($lastInsertedId);
   }
 
-  public function update(AbstractEntity $entity)
+  public function update(AbstractEntity $entity): ?int
   {
     if (!$this->entityManager->snapshotEntityManager->snapshotTaken()) {
       throw new Exception('To update use find method');
     }
 
     $properties = $this->entityManager->snapshotEntityManager->propertiesChanged($entity);
-    dd($properties);
+
+    if (!$properties) {
+      return null;
+    }
+
+    $sets = implode(', ', array_map(fn($field) => "{$field} = :{$field}", array_keys($properties)));
+
+    $sql = "UPDATE {$this->table} set {$sets} where id = :id";
+
+    $prepare = $this->connection->prepare($sql);
+    $prepare->execute([
+      ...$properties,
+      'id' => $entity->id
+    ]);
+
+    $this->entityManager->snapshotEntityManager->clearSnapshot();
+
+    return $prepare->rowCount();
   }
 }
